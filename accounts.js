@@ -35,11 +35,11 @@ var isChecksumAddress = function (address) {
 };
 
 const Accounts = {
-    get: function (pages, cb) {
+    get: function (pages, offset, cb) {
         var pagesIndex = Array.from(Array(pages).keys());
         let addresses = [];
-        Async.eachLimit(pagesIndex, 2, function(index, callback) {
-            const url = URL + (index + 1) + '?ps=100';
+        Async.eachLimit(pagesIndex, 5, function(index, callback) {
+            const url = URL + (index + 1 + offset) + '?ps=100';
             Request.get(url, function (err, response) {
                 if (err) {
                     return callback(err);
@@ -68,6 +68,8 @@ module.exports = Accounts;
 (function () {
     if (require.main === module) {
         const pages = 10;
-        Accounts.get(pages, console.log);
+        Accounts.get(pages, 120, function(err, accounts) {
+            console.log(accounts.length);
+        });
     }
 }());
